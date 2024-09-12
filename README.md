@@ -21,7 +21,7 @@ This project can be used to generate transcripts where privacy is a concern. The
 1. Clone the repository
 
 ```
-git clone ""
+git clone https://github.com/dbanswan/voiceprint-ai.git
 ```
 
 2. Install the dependencies
