@@ -1,113 +1,176 @@
-import Image from "next/image";
+"use client";
+import React, { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Slider } from "@/components/ui/slider";
+import { AudioLines, InfoIcon } from "lucide-react";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 
-export default function Home() {
+import TranscriptReader from "@/components/transcriptReader";
+
+export default function ModernForm() {
+  const [file, setFile] = useState(null);
+  const [temperature, setTemperature] = useState(0.5);
+  //const [temperatureInc, setTemperatureInc] = useState("");
+  const [responseFormat, setResponseFormat] = useState("text");
+  //const [model, setModel] = useState("");
+  const [transcript, setTranscript] = useState("");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!file) {
+      alert("Please select a file.");
+      return;
+    }
+    // get the full path of the file
+
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("temperature", temperature);
+    formData.append("temperature_inc", "0.2");
+    formData.append("response_format", responseFormat);
+
+    try {
+      const res = await fetch("/api/transcribe", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to fetch from external service");
+      }
+
+      let data = await res.json();
+      //console.log("data : ", data);
+      setTranscript(data.transcript);
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Error processing request");
+    }
+  };
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">app/page.js</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+    <div className="space-y-8 max-w-4xl mx-auto p-4 backdrop-blur-lg">
+      <Card>
+        <CardHeader>
+          <CardTitle>Voiceprint</CardTitle>
+          <CardDescription>Transcribe any audio file locally</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="file">File</Label>
+              <Input
+                id="file"
+                type="file"
+                onChange={(e) => {
+                  setFile(e.target.files[0]);
+                  setTranscript("");
+                }}
+                className="dark:text-white"
+              />
+            </div>
+            <div className="space-y-2">
+              <div className="flex items-center gap-x-2">
+                <Label htmlFor="temperature">
+                  Temperature: {temperature.toFixed(2)}{" "}
+                </Label>
+                <HoverCard>
+                  <HoverCardTrigger>
+                    <InfoIcon className="h-4 w-4" />
+                  </HoverCardTrigger>
+                  <HoverCardContent>
+                    Temperature is a parameter in a large language model (LLM)
+                    that controls the randomness of the output. It&apos;s often
+                    set between 0 and 1. <br />
+                    <br />
+                    <span className="font-semibold">Low Temperature</span> : The
+                    model is more likely to choose the most predictable words,
+                    resulting in more deterministic and conservative outputs.{" "}
+                    <br />
+                    <br />
+                    <span className="font-semibold">High temperature</span> :
+                    The model is more likely to choose less likely words,
+                    resulting in more varied and creative outputs.
+                  </HoverCardContent>
+                </HoverCard>
+              </div>
+              <Slider
+                id="temperature"
+                min={0}
+                max={1}
+                step={0.01}
+                value={[temperature]}
+                onValueChange={(value) => setTemperature(value[0])}
+              />
+            </div>
+            {/* <div className="space-y-2">
+              <Label htmlFor="temperatureInc">Temperature Increment</Label>
+              <Input
+                id="temperatureInc"
+                type="number"
+                placeholder="Enter temperature increment"
+                value={temperatureInc}
+                onChange={(e) => setTemperatureInc(e.target.value)}
+              />
+            </div> */}
+            <div className="space-y-2">
+              <Label htmlFor="responseFormat">Response Format</Label>
+              <Select value={responseFormat} onValueChange={setResponseFormat}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select response format" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="text">Text</SelectItem>
+                  <SelectItem value="verbose_json">Verbose JSON</SelectItem>
+                  <SelectItem value="json">JSON</SelectItem>
 
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-full sm:before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full sm:after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px] z-[-1]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
+                  <SelectItem value="srt">SRT</SelectItem>
+                  <SelectItem value="vtt">VTT</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            {/* <div className="space-y-2">
+              <Label htmlFor="model">Model</Label>
+              <Select value={model} onValueChange={setModel}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select model" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="model1">Model 1</SelectItem>
+                  <SelectItem value="model2">Model 2</SelectItem>
+                  <SelectItem value="model3">Model 3</SelectItem>
+                </SelectContent>
+              </Select>
+            </div> */}
+            <Button type="submit" className="w-full">
+              <AudioLines className="mr-2 h-4 w-4" /> Transcribe
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
 
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800 hover:dark:bg-opacity-30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore starter templates for Next.js.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50 text-balance`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+      {transcript && <TranscriptReader transcript={transcript} />}
+    </div>
   );
 }

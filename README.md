@@ -1,36 +1,85 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Voice Print AI
 
-## Getting Started
+## Introduction
 
-First, run the development server:
+Voice Print AI is a project that uses Whisperfile to generate transcripts from audio files **completely locally on your system**.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+![Voice Print AI](/public/projectimages/voiceprint-ai-1.png)
+
+Read more about the Whisperfile at link [Mozilla/whisperfile](https://huggingface.co/Mozilla/whisperfile).
+
+> Whisperfile is a high-performance implementation of OpenAI's Whisper created by Mozilla Ocho as part of the llamafile project, based on the whisper.cpp software written by Georgi Gerganov, et al.
+
+## Why
+
+This project can be used to generate transcripts where privacy is a concern. The audio files are processed locally on your system and no data is sent to any server. This can include sensitive information like medical records, legal data, etc.
+
+## How to use
+
+1. Clone the repository
+
+```
+git clone ""
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Install the dependencies
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+```
+npm install
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+3. Go to [Hugging Face](https://huggingface.co/Mozilla/whisperfile/tree/main) and download the model files.
 
-## Learn More
+   ![Download the model files](/public/projectimages/hugging-face-whisperfile.png)
 
-To learn more about Next.js, take a look at the following resources:
+   I would suggest downloading "whisper-tiny.llamafile" it is around 315 MB and works great for most part. But feel free to download the other models as well the larger the model the better the results. But they would need more resources to run.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+4. Go the folder where you downloaded the model file.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+   ```
+   # make it executable
+   chmod +x whisper-tiny.llamafile
+   ```
 
-## Deploy on Vercel
+5. And then run it with the following command
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+   ```
+   ./whisper-tiny.llamafile
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+   ![Run the model](/public/projectimages/run-whisperfile.png)
+
+   As you can see the model will start a server on port 8080. And this what we are going to call from our app. **You can download any model and run it the same way**.
+
+6. Run the app
+
+   ```
+   npm run dev
+   ```
+
+No keys or API tokens are required to run this project.
+
+## How it works
+
+1. Select the audio
+   ![Select the audio](/public/projectimages/voiceprint-select-file.png)
+
+2. Press the "Transcribe" button
+   ![Press the transcribe button](/public/projectimages/voiceprint-transcribe.png)
+3. You can to "History" to see the all the transcripts that you have generated.
+
+   ![History](/public/projectimages/voiceprint-history.png)
+
+4. It also comes with audio player so you can listen to the audio as well.
+
+   ![Audio player](/public/projectimages/voiceprint-audio-player.png)
+
+5. The history is stored in a simple JSON file inside the db folder. Feel free to switch to let's say sqlite or any other database. This is done to keep things simple and not to add any extra dependencies.
+
+6. The audio files are stored in the public/audio/uploads folder.
+
+## WIP & Future features
+
+1. **Make it a desktop app**. This is the most important feature that I would like to add. This will make it easier for the user to use the app. And they don't have to worry about running the whisperfile server separately. Helps less technical users to use the app or those who do not like the complexity of running the server separately.
+2. Only save to history if the user chooses to save it. Currently, it saves all the transcripts to the history.
+3. Option to delete the transcripts from the history.

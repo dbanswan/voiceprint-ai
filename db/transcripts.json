@@ -1,0 +1,10 @@
+[
+  {
+    "file": "samples_jfk.mp3",
+    "transcript": " And so my fellow Americans ask not what your country can do for you ask what you can do for your country.\n",
+    "temperature": "0.5",
+    "responseFormat": "text",
+    "temperature_inc": "0.2",
+    "date": "2024-09-12T13:38:58.946Z"
+  }
+]
