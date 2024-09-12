@@ -63,20 +63,26 @@ No keys or API tokens are required to run this project.
 
 1. Select the audio
    ![Select the audio](/public/projectimages/voiceprint-select-file.png)
-
+   <br>
 2. Press the "Transcribe" button
+   <br>
    ![Press the transcribe button](/public/projectimages/voiceprint-transcribe.png)
-3. You can to "History" to see the all the transcripts that you have generated.
-
+   <br>
+3. You can go to "History" tab to see the all the transcripts that you have generated.
+   <br>
    ![History](/public/projectimages/voiceprint-history.png)
 
-4. It also comes with audio player so you can listen to the audio as well.
+4. It also comes with audio player so you can listen to the audio as well while reading the transcript.
 
    ![Audio player](/public/projectimages/voiceprint-audio-player.png)
 
 5. The history is stored in a simple JSON file inside the db folder. Feel free to switch to let's say sqlite or any other database. This is done to keep things simple and not to add any extra dependencies.
 
 6. The audio files are stored in the public/audio/uploads folder.
+
+7. Also for advance users it also exports the transcript in JSON, Verbose json, VTT, SRT format. This can be used to integrate with other systems.
+
+   ![Export JSON](/public/projectimages/voiceprint-exports.png)
 
 ## WIP & Future features
 
