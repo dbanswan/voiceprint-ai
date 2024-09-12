@@ -1,5 +1,7 @@
 # Voice Print AI
 
+![Voice Print AI](/public/projectimages/voiceprint.png)
+
 ## Introduction
 
 Voice Print AI is a project that uses Whisperfile to generate transcripts from audio files **completely locally on your system**.
