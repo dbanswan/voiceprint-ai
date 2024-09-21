@@ -88,6 +88,5 @@ No keys or API tokens are required to run this project.
 
 ## WIP & Future features
 
-1. **Make it a desktop app**. This is the most important feature that I would like to add. This will make it easier for the user to use the app. And they don't have to worry about running the whisperfile server separately. Helps less technical users to use the app or those who do not like the complexity of running the server separately.
-2. Only save to history if the user chooses to save it. Currently, it saves all the transcripts to the history.
-3. Option to delete the transcripts from the history.
+1. **Make it a desktop app**.
+2. Full CRUD implementation for transcripts
