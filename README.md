@@ -39,7 +39,7 @@ docker run -p 8080:8080 dbanswan/whisper-tiny-server
 
 Both images are based on tiny model to keep the size small.
 
-## How to use
+## Run the project locally
 
 1. Clone the repository
 
