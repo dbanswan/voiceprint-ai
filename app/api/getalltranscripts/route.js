@@ -1,6 +1,5 @@
 import fs from "fs";
 import path from "path";
-const dbFilePath = path.join(process.cwd(), "db", "transcripts.json");
 
 export const GET = async (req) => {
   try {
@@ -15,9 +14,13 @@ export const GET = async (req) => {
 };
 
 async function getAllTranscripts() {
+  const dbFilePath = path.join(process.cwd(), "db", "transcripts.json");
+  console.log("Reading transcripts from " + dbFilePath);
   if (fs.existsSync(dbFilePath)) {
     const data = fs.readFileSync(dbFilePath);
     return JSON.parse(data);
+  } else {
+    console.log("No transcripts found at " + dbFilePath);
   }
   return [];
 }
